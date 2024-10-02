@@ -1,6 +1,8 @@
-from flask import Flask, request
-from fizzbuzz import Compute, FizzbuzzInput
-from utils import from_json
+import json
+from flask import Flask, request, jsonify
+from fizzbuzz import fizz
+from utils import jsonutils
+from dataclasses import asdict
 
 
 app = Flask(__name__)
@@ -12,7 +14,11 @@ def hello_world():
 
 @app.route("/fizzbuzz", methods = ['POST'])
 def fizzbuzz():
-    obj = from_json(request.get_json())
+    obj = jsonutils.from_json(request.get_data(), fizz.FizzbuzzInput)
+    if isinstance(obj, Exception):
+        return obj.__str__(), 400
+    
+    return  jsonify(asdict(fizz.Compute(obj)))
     
 
 if __name__ == "__main__":
