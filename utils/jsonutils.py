@@ -3,6 +3,10 @@ import json
 
 T = TypeVar('T')
 
-def from_json(value: str, typeOfT: Type) -> T:
+def from_json(value: str, typeOfT: Type) -> T | Exception:
     dic = json.loads(value)
-    return typeOfT(**dic)
+    try:
+        v = typeOfT(**dic)
+        return v
+    except Exception as e:
+        return e
